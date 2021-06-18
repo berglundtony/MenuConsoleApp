@@ -4,93 +4,109 @@ namespace MenuConsoleApp
 {
     class Program
     {
+        static IUI ui = new ConsoleUI();
         static void Main(string[] args)
         {
-            String myoption = String.Empty;
             do
             {
-                UserInput(myoption);
-                MainMenu(myoption);
+                Console.Clear();
+                UserInput();
+                MainMenu();
             } while (true);
         }
 
-        private static void UserInput(String myoption)
+        private static void UserInput()
         {
-            Console.WriteLine("Du har kommit till huvudmenyn och du kan välja olika kommandon och tryck sedan enter.");
-            Console.WriteLine("1 Välj biobokning");
-            Console.WriteLine("2 Välj looptest");
-            Console.WriteLine("3 Välj Se det tredje ordet i en mening");
-            Console.WriteLine("4 Välj Se det tredje ordet i en mening");
-            Console.WriteLine("0. Avsluta\r\n");
-            Console.Write("Skriv in valfri siffra mellan 0-6, tryck sedan Enter knappen: ");
-            myoption = Console.ReadLine();
-            //int.TryParse(myoption, out option);
-            MainMenu(myoption);
-
-            // 2.Skapa skalet till en Switch-sats som till en början har Två Cases.
-            // Ett för ”0” somstänger ner programmet och ett default som berättar att det är felaktig input.
-            // 3.Skapa en ​oändlig iteration, ​alltså något som inte tar slut innan vi säger till att denska ta slut.
-            // Detta löser ni med att skapa en egen bool med tillhörande while-loop.
-            // 4.Bygg ut menyn med val att exekvera de övriga övningarna.
+            ui.Write("Du har kommit till huvudmenyn och du kan välja olika kommandon och tryck sedan enter.");
+            ui.Write("1 Välj biobokning");
+            ui.Write("3 Välj looptest");
+            ui.Write("4 Välj Se det tredje ordet i en mening");
+            ui.Write("0. Avsluta\r\n");
+            ui.Print("Skriv in valfri siffra mellan 0-3, tryck sedan Enter knappen: ");
         }
 
 
-        static void MainMenu(string myoption)
+        static void MainMenu()
         {
+            String myoption = String.Empty;
+            myoption = ui.GetInput();
 
-            bool continuestatus = true;
-            // While to make a loop to make many or possibility to make infinte quantity of choices.
-            while (continuestatus)
+            switch (myoption)
             {
-                // Switch to handle different choises of the menu.
-                switch (myoption)
-                {
-                    default:
-                        Console.WriteLine("Ange en korrekt siffra");
-                        continuestatus = true;
-                        break;
-                    case "0":
-                        Console.WriteLine("Är det säkert att du vill avsluta? skriv j/n, tryck sedan Enter knappen:");
-                        string exit = Console.ReadLine();
+                default:
+                
+                    ui.Write("Ange en korrekt siffra, tryck valfri tangent för att gå till huvudmenyn.");
+                    ui.GetKeyInput();
+                    break;
+                case "0":
+                    ui.Write("Är det säkert att du vill avsluta? skriv j/n, tryck sedan Enter knappen:");
+                    string exit = ui.GetInput();
 
-                        exit.ToLower();
-                        if (exit == "j")
-                        {
-                            continuestatus = false;
-                            Environment.Exit(1);
-                            Console.ReadKey();
-                            break;
-                        }
-                        else
-                        {
-                            Main(null);
-                            continuestatus = true;
-                            break;
-                        }
+                    exit.ToLower();
+                    if (exit == "j")
+                    {
+                        Environment.Exit(-1);
+                        break;
+                    }
+                    else
+                    {
+                        Main(null);
+                        break;
+                    }
 
-                    case "1":
-                        break;
-                    case "2":
-                        break;
-                    case "3":
-                        break;
-                    case "4":
-                        break;
-                    case "5":
-                        break;
-                    case "6":
-                        break;
-                }
-
+                case "1":
+                    ui.Write("1 Välj biobokning för 1 person");
+                    ui.Write("2 Välj biobokning för sällskap");
+                    ui.Write(" ");
+                    ui.Print("En eller flera personer? tryck sedan Enter: ");
+                    myoption = ui.GetInput();
+                    int option = 0; 
+                    option = Util.CheckInt(myoption, ui);
+                    MovieBooking.CheckPriceForMovie(option);
+                    break;
+                case "2":
+                    Looptest();
+                    break;
+                case "3":
+                    ThirdWord();
+                    break;
             }
-
         }
 
+        private static void Looptest()
+        {
+            string word = Util.CheckString("Skriv ett ord: ", ui);
 
-            //Menyval 1: Ungdom eller pensionärFör att exemplifiera ​if-satser​ skall ni implementera,
-            //på uppdrag av en teoretisk lokal bio,ett program som kollar om en person är pensionär eller ungdom vid angiven ålder.
-            //För attkomma till denna funktion skall ett ​case ​i huvudmenyn skapas för ”1”, detta skall ävenframgå i texten som förklarar menyn.
+            for (int i = 0; i < 10; i++)
+            {
+                ui.Print($" {i + 1}. {word}");
+            }
+            ui.Write(" ");
+            ui.Write(" ");
+            ui.Write("Tryck valfri tangent för att gå till huvudmenyn");
+            ui.GetKeyInput();
+        }
 
+        private static void ThirdWord()
+        {
+            var sentence= Util.CheckString("Skriv en mening med minst tre ord: ", ui);
+            
+            var split = sentence.Split(" ");
+            if(split.Length < 3)
+            {
+                ui.Write("Du måste ange minst 3 ord");
+                ui.Write(" ");
+                ThirdWord();
+            }
+            else
+            {
+                string thirdword = split[2];
+                ui.Write(thirdword);
+                ui.Write(" ");
+                ui.Write("Tryck valfri tangent för att gå tillbaka till huvudmenyn.");
+                ui.GetKeyInput();
+            }
         }
     }
+}
 
