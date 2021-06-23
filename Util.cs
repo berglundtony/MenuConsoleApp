@@ -98,6 +98,7 @@ namespace MenuConsoleApp
 
                 if (!success)
                     ui.Write("Fel, du måste skriva en siffra");
+                break;
 
             } while (!success);
 
